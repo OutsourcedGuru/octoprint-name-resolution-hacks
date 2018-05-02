@@ -34,3 +34,53 @@ Once this has succeeded, the Windows- or Linux-based user may then just open the
 
 ### Update
 It looks like this will stay cached for some time. Even after clearing the `arp` cache and rebooting, the browser itself also appears to be caching the DNS lookup as well so that's good news.
+
+### Another Workaround
+On a Windows-based computer and opening a `cmd` shell as Administrator, it's easy enough to edit the `c:/windows/system32/drivers/etc/hosts` file to add an entry for your computer but you would need to know its IP address first (editing for your printer's address):
+
+```
+192.168.1.20	octopi octopi.local
+```
+
+### Better Solution
+The proper way to do something like this is to get the Raspberry Pi 3 (or similar hosting computer) to broadcast its NETBIOS name, making Windows computers happier.
+
+> Samba is a royalty-free Linux package that allows computers to behave like Microsoft servers.
+
+```
+# It's important to run this next command before any attempt to update using apt-get later
+$ sudo apt-get update
+# Save a copy of your existing configuration file; you can always revert without ill effect
+$ sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.save
+$ sudo apt-get install samba samba-common-bin
+```
+
+Now it will be necessary to edit the Samba configuration file, find the **[global]** section and add these lines.
+
+```
+$ sudo nano /etc/samba/smb.conf
+
+[global]
+  workgroup = WORKGROUP
+  wins support = yes
+  netbios name=octopi
+  server string=OctoPrint on Raspbian
+```
+
+Having saved the file and exited (Ctrl-O, Enter, Ctrl-X), now parse it to verify that SMB likes what you did.
+
+```
+$ sudo testparm /etc/samba/smb.conf
+```
+
+Assuming that it's happy, now reboot to load those changes.
+
+```
+$ sudo reboot
+```
+
+#### Testing in OSX
+To verify that your OctoPrint is now broadcasting, in Finder, press Cmd-K and then the Browse button. Although it appears here, we didn't share any folders so you can drill into it. This should suffice for testing the NETBIOS broadcast, though.
+
+#### Testing in Windows
+Perhaps the best way to test this is to try visiting `http://octopi/` from your browser, noting the absence of `.local` as would normally be seen in these URLs.
