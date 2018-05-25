@@ -84,3 +84,8 @@ To verify that your OctoPrint is now broadcasting, in Finder, press Cmd-K and th
 
 #### Testing in Windows
 Perhaps the best way to test this is to try visiting `http://octopi/` from your browser, noting the absence of `.local` as would normally be seen in these URLs.
+
+|Donate||Cryptocurrency|
+|:-----:|---|:--------:|
+| ![eth-receive](https://user-images.githubusercontent.com/15971213/40564950-932d4d10-601f-11e8-90f0-459f8b32f01c.png) || ![btc-receive](https://user-images.githubusercontent.com/15971213/40564971-a2826002-601f-11e8-8d5e-eeb35ab53300.png) |
+|Ethereum||Bitcoin|
